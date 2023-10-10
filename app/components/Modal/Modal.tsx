@@ -1,99 +1,132 @@
-import React from "react";
+"use client";
+
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineClose } from "react-icons/ai";
-import LoginBtn from "../../LoginBtn";
+import Button from "../Button";
 
-interface ModalProps {
-  show: boolean;
-  toggle: () => void;
-}
-
-const Overlay = styled.div`
+const ModalContainer = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
 `;
 
-const ModalContainer = styled.div`
-  position: absolute;
-  right: 500px;
+const ModalWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
   width: 500px;
-  height: 400px;
-  border: 1px solid;
-  z-index: 2;
-  border-radius: 15px;
+  height: 600px;
   background-color: white;
+  transform: translate(-50%, -50%);
 `;
 
-const Top = styled.div`
-  display: flex;
-  position: relative;
-  height: 30px;
-  width: 95%;
-  align-items: center;
+const Header = styled.div`
+  position: absolute;
+  top: 10px;
+  width: 100%;
   border-bottom: 1px solid lightgray;
-  padding: 10px;
-`;
-
-const Text = styled.h2`
-  position: relative;
-  left: 30px;
-`;
-
-const Title = styled.div`
   display: flex;
-  position: absolute;
-  left: 180px;
+  gap: 190px;
+  height: 30px;
+  font-weight: 600;
 `;
 
-const Button = styled.button`
-  width: 90%;
-  display: flex;
-  position: absolute;
-  top: 40%;
-  left: 5%;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  border-radius: 7px;
-  background-color: #ff6969;
-`;
+interface ModalProps {
+  isOpen?: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+  title?: string;
+  body: React.ReactElement;
+  footer: React.ReactElement;
+  actionLabel: string;
+  disabled?: boolean;
+  secondaryAction?: () => void;
+  secondaryLabel?: string;
+}
 
-const Login = styled.button`
-  width: 90%;
-  display: flex;
-  position: absolute;
-  top: 60%;
-  left: 5%;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 7px;
-  font-size: 20px;
-`;
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  title,
+  body,
+  footer,
+  actionLabel,
+  disabled,
+  secondaryAction,
+  secondaryLabel,
+}) => {
+  const [showModal, setShowModal] = useState(isOpen);
 
-export const Modal: React.FC<ModalProps> = ({ show, toggle }) => {
+  useEffect(() => {
+    setShowModal(isOpen);
+  }, [isOpen]);
+
+  const handleClose = useCallback(() => {
+    if (disabled) {
+      return;
+    }
+
+    setShowModal(false);
+    setTimeout(() => {
+      onClose();
+    }, 300);
+  }, [disabled, onClose]);
+
+  const handleSubmit = useCallback(() => {
+    if (disabled) {
+      return;
+    }
+
+    onSubmit();
+  }, [disabled, onSubmit]);
+
+  const handleSecondaryAction = useCallback(() => {
+    if (disabled || !secondaryAction) {
+      return;
+    }
+
+    secondaryAction();
+  }, [disabled, secondaryAction]);
+
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <>
-      {show && <Overlay />}
-      {show && (
-        <ModalContainer>
-          <Top>
-            <AiOutlineClose onClick={toggle}></AiOutlineClose>
-            <Title>로그인 및 회원가입</Title>
-          </Top>
-          <div>
-            <Text>에어비앤비에 오신것을 환영합니다</Text>
-            <Text>로그인 해주세요</Text>
-          </div>
-          <LoginBtn />
-          <Login>계속</Login>
-        </ModalContainer>
-      )}
-    </>
+    <ModalContainer>
+      <ModalWrapper>
+        <Header>
+          <AiOutlineClose
+            onClick={handleClose}
+            style={{ position: "relative", left: "10px" }}
+          />
+          {title}
+        </Header>
+        {body}
+        {footer}
+        {secondaryAction && secondaryLabel && (
+          <Button
+            disabled={disabled}
+            label={secondaryLabel}
+            onClick={handleSubmit}
+          />
+        )}
+        <Button
+          disabled={disabled}
+          label={actionLabel}
+          onClick={handleSubmit}
+        />
+      </ModalWrapper>
+    </ModalContainer>
   );
 };
+
+export default Modal;

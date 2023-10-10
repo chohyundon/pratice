@@ -3,7 +3,8 @@
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
 import { Loading } from "./components/loading";
-import { Modal } from "./components/Modal/Modal";
+import RegisterModal from "./components/Modal/RegisterModal";
+import ToasterProvider from "./components/providers/ToasterProvider";
 
 export default function RootLayout({
   children,
@@ -14,12 +15,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Loading>
-          <Modal
-            show={false}
-            toggle={function (): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
+          <ToasterProvider />
+          <RegisterModal />
           <Navbar />
         </Loading>
         {children}

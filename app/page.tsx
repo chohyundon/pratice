@@ -1,16 +1,12 @@
-"use client";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 
-import React from "react";
-import styled from "styled-components";
+export default async function Page() {
+  let session = await getServerSession(authOptions);
 
-const Title = styled.h3`
-  color: #ff9b9b;
-`;
-
-export default function page() {
   return (
     <div>
-      <Title>Hello AirBnb!</Title>
+      <p>반갑습니다 {session?.user?.name}님</p>
     </div>
   );
 }

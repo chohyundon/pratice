@@ -4,8 +4,7 @@ import React, { useCallback, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import styled from "styled-components";
-import MenuItem from "./MenuItem";
-import { Modal } from "../Modal/Modal";
+import Login from "./Login";
 
 const Container = styled.div`
   display: flex;
@@ -71,9 +70,7 @@ export default function UserMenu() {
       </User>
       {isOpen && (
         <MenuContainer>
-          <MenuItem onClick={() => setShow(!show)} label="Log in" />
-          <MenuItem onClick={() => {}} label="Sing Up" />
-          {show && <Modal show={show} toggle={toggleModal}></Modal>}
+          <Login />
         </MenuContainer>
       )}
     </Container>
